@@ -1,6 +1,6 @@
 import { Amplify } from 'aws-amplify';
 import { generateClient} from 'aws-amplify/api';
-import config from '../amplifyconfiguration.json';
+import config from '../aws-exports';
 import { useEffect, useState } from 'react';
 // GraphQLのMutationとQueryをインポート
 import { createTodo } from '../graphql/mutations';
@@ -81,8 +81,6 @@ export function DynamoDB() {
       const newTodo = await API.graphql({
         query: createTodo,
         variables: { input: todoDetails },
-				// Cognitoユーザープールで認証
-        authMode: "AMAZON_COGNITO_USER_POOLS"
       });
 
       console.log('新しいTodoを作成しました:', newTodo);
