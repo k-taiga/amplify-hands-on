@@ -1,7 +1,7 @@
 type Todo
   @model
   @auth(rules: [
-    { allow: public, operations: [read, create] },
+    { allow: private, operations: [read, create] },
     { allow: owner }
   ]) {
   title: String!
