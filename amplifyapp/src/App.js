@@ -6,6 +6,11 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 
 import { DynamoDB } from "./components/DynamoDB";
 
+import { Amplify } from "aws-amplify";
+import config from "./aws-exports.js";
+
+Amplify.configure(config);
+
 function App() {
   return (
     <div className="App">

@@ -1,13 +1,10 @@
-import { Amplify } from 'aws-amplify';
 import { generateClient} from 'aws-amplify/api';
-import config from '../aws-exports';
 import { useEffect, useState } from 'react';
 // GraphQLのMutationとQueryをインポート
 import { createTodo } from '../graphql/mutations';
 import { listTodos } from '../graphql/queries';
 import { getCurrentUser } from '@aws-amplify/auth';
 
-Amplify.configure(config);
 const API = generateClient();
 
 export function DynamoDB() {
