@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { createTodo } from '../graphql/mutations';
 import { listTodos } from '../graphql/queries';
 import { getCurrentUser } from '@aws-amplify/auth';
+import { uploadData, getUrl } from 'aws-amplify/storage';
+import { S3 } from './S3';
 
 const API = generateClient();
 
@@ -13,6 +15,7 @@ export function DynamoDB() {
   // 2. 入力フォームの初期値
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
 
   //コンポーネント初回マウント時にTodo一覧を取得する
   useEffect(() => {
@@ -58,6 +61,10 @@ export function DynamoDB() {
     setDescription(event.target.value);
   };
 
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  }
+
   /**
    * フォーム送信時に、新しいTodoをDynamoDBに保存し、最新一覧を再取得
    */
@@ -66,10 +73,15 @@ export function DynamoDB() {
     event.preventDefault();
 
     try {
+      // 画像をS3にアップロード
+      const stored = await uploadData({key: image.name, data: image});
+      console.log('画像をアップロードしました:', stored);
+
       // 入力されたTitleとDescriptionをまとめたオブジェクト
       const todoDetails = {
         title,
-        description
+        description,
+        image: stored.result.key
       };
 
       await checkUser();
@@ -104,6 +116,10 @@ export function DynamoDB() {
         </label>
         <br />
         <label>
+          Image:
+          <input type="file" onChange={handleImageChange} />
+        </label>
+        <label>
           Description:
           {/* descriptionの入力欄 */}
           <input
@@ -121,7 +137,7 @@ export function DynamoDB() {
       <ol>
         {todos.map((todo) => (
           <li key={todo.id}>
-            <p>title={todo.title}, description={todo.description}</p>
+            <S3 image={todo.image} title={todo.title} description={todo.description} />
           </li>
         ))}
       </ol>

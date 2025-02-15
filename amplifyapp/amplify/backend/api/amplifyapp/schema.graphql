@@ -5,5 +5,6 @@ type Todo
     { allow: owner }
   ]) {
   title: String!
-  description: String
+  description: String,
+  image: String
 }
